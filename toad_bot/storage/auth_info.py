@@ -12,6 +12,8 @@ from pyrogram import (
 )
 
 from toad_bot.enums import AuthInfoEnum
+from toad_bot.storage import config
+from toad_bot.handlers import init_handlers
 
 
 class AuthInfo:
@@ -38,9 +40,13 @@ class AuthInfo:
             api_id=api_id,
             api_hash=api_hash,
             phone_number=phone,
-            password=password_2fa
+            password=password_2fa,
+            device_model=config.DEVICE_MODEL,
+            app_version=config.APP_VERSION,
+            system_version=config.SYSTEM_VERSION,
         )
         self.clients[user_id] = client
+        init_handlers(client)
         return client
     
     def get_client(self, user_id: int) -> Client | None:

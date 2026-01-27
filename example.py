@@ -14,7 +14,7 @@ async def main() -> None:
     api_hash = getenv("TG_API_HASH")
     password_2fa = getenv("TG_PASSWORD_2FA")
     phone = getenv("TG_PHONE")
-    AuthInfoClass.add_client(
+    client = AuthInfoClass.add_client(
         user_id=user_id,
         api_id=api_id,
         api_hash=api_hash,
@@ -25,6 +25,9 @@ async def main() -> None:
     if not result == AuthInfoEnum.CLIENT_AUTH_SUCCSESS:
         result = await AuthInfoClass.auth_send_key(user_id)
         result = await AuthInfoClass.auth_code(user_id, code=input("[code] = "))
+    
+    status = await client.start()
+    await asyncio.Event().wait()
 
 
 if __name__ == "__main__":
