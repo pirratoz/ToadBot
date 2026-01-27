@@ -6,6 +6,7 @@ from aiohttp import (
 )
 
 from toad_bot.api.dto import UserProfile
+from toad_bot.api.dto.user_profile import TaskInfo
 
 
 class WebApi:
@@ -35,4 +36,15 @@ class WebApi:
         async with self._session.get(f"users/{user_id}") as response:
             if response.status == 200:
                 return UserProfile.load_from_json(await response.json())
+            return None
+
+    @ensure_session
+    async def get_ready_tasks(self, user_ids: list[int]) -> list[TaskInfo] | None:
+        json_data = {
+            "user_ids": user_ids
+        }
+        async with self._session.post("tasks/ready", json=json_data) as response:
+            if response.status == 200:
+                res = await response.json()
+                return TaskInfo.load_from_jsons(res["tasks"])
             return None

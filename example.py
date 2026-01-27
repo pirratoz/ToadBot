@@ -40,6 +40,8 @@ async def example_api() -> None:
         print("User is None")
     else:
         print(user)
+    tasks = await wa.get_ready_tasks([user_id, 1])
+    print(tasks)
     await wa.close()
 
 
