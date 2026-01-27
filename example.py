@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 from toad_bot.storage import AuthInfoClass
 from toad_bot.enums import AuthInfoEnum
 
+from toad_bot.api import WebApi
+
 
 async def main() -> None:
-    load_dotenv()
     user_id = int(getenv("TG_USER_ID"))
     api_id = getenv("TG_API_ID")
     api_hash = getenv("TG_API_HASH")
@@ -30,5 +31,15 @@ async def main() -> None:
     await asyncio.Event().wait()
 
 
+async def example_api() -> None:
+    user_id = int(getenv("TG_USER_ID"))
+
+    wa = WebApi()
+    user = await wa.get_user(user_id)
+    print(user)
+    await wa.close()
+
+
 if __name__ == "__main__":
+    load_dotenv()
     asyncio.run(main())
