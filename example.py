@@ -36,10 +36,13 @@ async def example_api() -> None:
 
     wa = WebApi()
     user = await wa.get_user(user_id)
-    print(user)
+    if user is None:
+        print("User is None")
+    else:
+        print(user)
     await wa.close()
 
 
 if __name__ == "__main__":
     load_dotenv()
-    asyncio.run(main())
+    asyncio.run(example_api())

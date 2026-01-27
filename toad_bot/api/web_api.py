@@ -3,8 +3,9 @@ from os import getenv
 from aiohttp import (
     ClientSession,
     TCPConnector,
-    ClientResponse,
 )
+
+from toad_bot.api.dto import UserProfile
 
 
 class WebApi:
@@ -30,6 +31,8 @@ class WebApi:
             await self._session.close()
     
     @ensure_session
-    async def get_user(self, user_id: int) -> ClientResponse:
+    async def get_user(self, user_id: int) -> UserProfile | None:
         async with self._session.get(f"users/{user_id}") as response:
-            return response
+            if response.status == 200:
+                return UserProfile.load_from_json(await response.json())
+            return None
