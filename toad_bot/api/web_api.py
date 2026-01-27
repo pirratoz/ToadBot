@@ -1,4 +1,5 @@
 from os import getenv
+from datetime import datetime
 
 from aiohttp import (
     ClientSession,
@@ -7,6 +8,7 @@ from aiohttp import (
 
 from toad_bot.api.dto import UserProfile
 from toad_bot.api.dto.user_profile import TaskInfo
+from toad_bot.enums import TaskTypeEnum
 
 
 class WebApi:
@@ -48,3 +50,16 @@ class WebApi:
                 res = await response.json()
                 return TaskInfo.load_from_jsons(res["tasks"])
             return None
+    
+    @ensure_session
+    async def set_next_run(self, user_id: int, type_task: TaskTypeEnum, next_run: datetime) -> bool:
+        json_data = {
+            "user_id": user_id,
+            "type": type_task.value,
+            "next_run": next_run.isoformat()
+        }
+        async with self._session.post("set/next_run", json=json_data) as response:
+            if response.status == 200:
+                return True
+            return False
+    

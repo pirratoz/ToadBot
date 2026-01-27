@@ -4,16 +4,29 @@ from os import (
     makedirs,
     path
 )
-
+from asyncio import (
+    sleep as asyncio_sleep,
+    create_task as asyncio_create_task,
+)
 
 from pyrogram import (
     Client,
     errors,
 )
 
-from toad_bot.enums import AuthInfoEnum
+from toad_bot.enums import (
+    AuthInfoEnum,
+    TaskTypeEnum,
+)
 from toad_bot.storage import config
 from toad_bot.handlers import init_handlers
+from toad_bot.storage.config import WEB_API
+from toad_bot.commands import (
+    handle_cmd_reward_marriage,
+    handle_cmd_reward_clan,
+    handle_auto_eat_baby_toad,
+    handle_auto_eat_toad,
+)
 
 
 class AuthInfo:
@@ -113,5 +126,32 @@ class AuthInfo:
         await client.disconnect()
 
         return AuthInfoEnum.CLIENT_AUTH_SUCCSESS
+
+    async def pooling_server(self) -> None:
+        async def any_command_handler(*args, **kwargs):
+            ...
+        commands = {
+            TaskTypeEnum.EAT_FROG: handle_auto_eat_toad,
+            TaskTypeEnum.EAT_TOAD: handle_auto_eat_baby_toad,
+            TaskTypeEnum.REWARD_CLAN: handle_cmd_reward_clan,
+            TaskTypeEnum.REWARD_MARRIAGE: handle_cmd_reward_marriage,
+        }
+        any_command = any_command_handler
+        while True:
+            try:
+                user_ids: list[int] = [
+                    client_id for client_id, client in self.clients.items() 
+                    if client.is_connected
+                ]
+                if not user_ids:
+                    return
+                tasks = await WEB_API.get_ready_tasks(user_ids)
+                for task in tasks:
+                    coro = commands.get(task.task_type, any_command)
+                    asyncio_create_task(coro, self.clients.get(task.user_id))
+            except Exception as e:
+                ...
+            
+            await asyncio_sleep(30)
 
 AuthInfoClass = AuthInfo()
