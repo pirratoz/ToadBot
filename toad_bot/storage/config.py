@@ -1,6 +1,9 @@
+from toad_bot.api import WebApi
+
 APP_VERSION = "v 0.0.1"
 DEVICE_MODEL = "Server Toads"
 SYSTEM_VERSION = "v 0.0.1"
 
 TOAD_BOT_ID = 1124824021
-NEED_FIX = 0
+
+WEB_API = WebApi()
