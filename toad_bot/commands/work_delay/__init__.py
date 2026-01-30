@@ -1,4 +1,5 @@
 __all__ = [
+    "WorkTimeDelaySec",
     "CafeteriaWork",
     "CasinoWork",
     "CookWork",
@@ -7,6 +8,7 @@ __all__ = [
 ]
 
 
+from toad_bot.commands.work_delay.base_delay import WorkTimeDelaySec
 from toad_bot.commands.work_delay.cafeteria_delay import CafeteriaWork
 from toad_bot.commands.work_delay.casino_delay import CasinoWork
 from toad_bot.commands.work_delay.cook_delay import CookWork
