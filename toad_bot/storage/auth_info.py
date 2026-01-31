@@ -135,11 +135,9 @@ class AuthInfo:
         client = self.get_client(user_id)
         try:
             if client.is_connected:
-                await client.disconnect()
-                asyncio_create_task(client.start())
+                await client.stop()
             else:
-                if client.is_connected:
-                    asyncio_create_task(client.stop())
+                await client.start()
         except errors.unauthorized_401:
             for file in path_user.iterdir():
                 if file.is_file():

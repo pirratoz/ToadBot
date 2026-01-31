@@ -6,7 +6,7 @@ def parse_requirements(filename):
 
 setup(
     name="toad_bot",
-    version="0.0.4",
+    version="0.0.5",
     packages=find_packages(),
     install_requires=parse_requirements("requirements.txt"),
 )
