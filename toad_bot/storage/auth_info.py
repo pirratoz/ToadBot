@@ -135,7 +135,10 @@ class AuthInfo:
         client = self.get_client(user_id)
         try:
             if client.is_connected:
-                await client.stop()
+                try:
+                    await client.stop(block=True)
+                except:
+                    ...
             else:
                 await client.start()
         except errors.Unauthorized:
