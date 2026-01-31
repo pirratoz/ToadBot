@@ -3,7 +3,7 @@ import re
 from pyrogram.client import Client
 from pyrogram.types import Message
 
-from toad_bot.storage.config import WEB_API
+import toad_bot.storage.config as config
 from toad_bot.api.dto import UserProfile
 
 
@@ -16,7 +16,7 @@ async def handle_calculate_expression(client: Client, message: Message) -> None:
     client_me  = await client.get_me()
     client_id = client_me.id
 
-    profile: UserProfile = await WEB_API.get_user(client_id)
+    profile: UserProfile = await config.WEB_API.get_user(client_id)
     if not profile.user.is_calculate:
         return
 

@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from pyrogram.client import Client
 
-from toad_bot.storage.config import WEB_API
+import toad_bot.storage.config as config
 from toad_bot.api.dto import UserProfile
 from toad_bot.enums import TaskTypeEnum
 
@@ -11,7 +11,7 @@ async def handle_cmd_toad_day(client: Client) -> None:
     client_me  = await client.get_me()
     client_id = client_me.id
 
-    profile: UserProfile = await WEB_API.get_user(client_id)
+    profile: UserProfile = await config.WEB_API.get_user(client_id)
     if not profile:
         return
     
@@ -33,4 +33,4 @@ async def handle_cmd_toad_day(client: Client) -> None:
         "next_run": task.next_run + time_delta,
     }
 
-    await WEB_API.set_next_run(**json_data)
+    await config.WEB_API.set_next_run(**json_data)
