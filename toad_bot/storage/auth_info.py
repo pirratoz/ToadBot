@@ -129,6 +129,24 @@ class AuthInfo:
 
         return AuthInfoEnum.CLIENT_AUTH_SUCCSESS
 
+    async def start_client(self, user_id: int) -> bool:
+        path_sessions = Path(getenv("PATH_TG_BOT_SESSIONS"))
+        path_user = path_sessions / f"{user_id}"
+        client = self.get_client(user_id)
+        try:
+            if client.is_connected:
+                await client.disconnect()
+                asyncio_create_task(client.start())
+            else:
+                if client.is_connected:
+                    asyncio_create_task(client.stop())
+        except errors.unauthorized_401:
+            for file in path_user.iterdir():
+                if file.is_file():
+                    file.unlink()
+            return False
+        return True
+
     async def pooling_server(self) -> None:
         async def any_command_handler(*args, **kwargs):
             ...
