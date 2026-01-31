@@ -35,6 +35,7 @@ class AuthInfo:
     def __init__(self):
         self.clients: dict[int, Client] = {}
         self.hash_code: dict[int, str] = {}
+        self.client_running: dict[int, bool] = {}
     
     def add_client(
         self,
@@ -62,6 +63,7 @@ class AuthInfo:
         )
         self.clients[user_id] = client
         init_handlers(client)
+        self.client_running[user_id] = False
         return client
     
     def get_client(self, user_id: int) -> Client | None:
@@ -129,15 +131,20 @@ class AuthInfo:
 
         return AuthInfoEnum.CLIENT_AUTH_SUCCSESS
 
+    def get_status_client(self, user_id: int) -> bool:
+        return self.client_running.get(user_id, False)
+
     async def start_client(self, user_id: int) -> bool:
         path_sessions = Path(getenv("PATH_TG_BOT_SESSIONS"))
         path_user = path_sessions / f"{user_id}"
         client = self.get_client(user_id)
         try:
             await client.start()
+            self.client_running[user_id] = True
         except errors.Unauthorized:
             for file in path_user.iterdir():
                 file.unlink()
+            self.client_running[user_id] = False
             return False
         return True
 
