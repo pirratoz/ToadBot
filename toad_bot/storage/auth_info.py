@@ -20,7 +20,6 @@ from toad_bot.enums import (
 )
 from toad_bot.storage import config
 from toad_bot.handlers import init_handlers
-from toad_bot.storage.config import WEB_API
 from toad_bot.commands import (
     handle_cmd_reward_marriage,
     handle_cmd_reward_clan,
@@ -166,7 +165,7 @@ class AuthInfo:
                 ]
                 if not user_ids:
                     continue
-                tasks = await WEB_API.get_ready_tasks(user_ids)
+                tasks = await config.WEB_API.get_ready_tasks(user_ids)
                 for task in tasks:
                     coro = commands.get(task.task_type, any_command)
                     asyncio_create_task(coro, self.clients.get(task.user_id))
