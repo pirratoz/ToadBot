@@ -63,3 +63,14 @@ class WebApi:
                 return True
             return False
     
+    @ensure_session
+    async def set_info_chat(self, user_id: int, chat_id: int, chat_title: str) -> bool:
+        json_data = {
+          "user_id": user_id,
+          "chat_id": chat_id,
+          "chat_title": chat_title
+        }
+        async with self._session.post("set/info/chat", json=json_data) as response:
+            if response.status == 200:
+                return True
+            return False
