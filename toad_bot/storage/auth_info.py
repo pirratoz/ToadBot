@@ -27,6 +27,7 @@ from toad_bot.commands import (
     handle_auto_eat_baby_toad,
     handle_auto_eat_toad,
     handle_cmd_toad_day,
+    handle_cmd_work,
 )
 
 
@@ -137,6 +138,7 @@ class AuthInfo:
             TaskTypeEnum.REWARD_CLAN: handle_cmd_reward_clan,
             TaskTypeEnum.REWARD_MARRIAGE: handle_cmd_reward_marriage,
             TaskTypeEnum.FROG_DAY: handle_cmd_toad_day,
+            TaskTypeEnum.WORK: handle_cmd_work,
         }
         any_command = any_command_handler
         while True:
