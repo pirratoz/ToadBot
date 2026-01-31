@@ -134,20 +134,6 @@ class AuthInfo:
     def get_status_client(self, user_id: int) -> bool:
         return self.client_running.get(user_id, False)
 
-    async def start_client(self, user_id: int) -> bool:
-        path_sessions = Path(getenv("PATH_TG_BOT_SESSIONS"))
-        path_user = path_sessions / f"{user_id}"
-        client = self.get_client(user_id)
-        try:
-            await client.start()
-            self.client_running[user_id] = True
-        except errors.Unauthorized:
-            for file in path_user.iterdir():
-                file.unlink()
-            self.client_running[user_id] = False
-            return False
-        return True
-
     async def pooling_server(self) -> None:
         async def any_command_handler(*args, **kwargs):
             ...
@@ -162,7 +148,6 @@ class AuthInfo:
         any_command = any_command_handler
         while True:
             await asyncio_sleep(30)
-            print("[task]: GET")
             try:
                 user_ids: list[int] = [
                     client_id for client_id, client in self.clients.items() 
