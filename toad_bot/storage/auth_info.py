@@ -138,7 +138,7 @@ class AuthInfo:
                 await client.stop()
             else:
                 await client.start()
-        except errors.unauthorized_401:
+        except errors.Unauthorized:
             for file in path_user.iterdir():
                 if file.is_file():
                     file.unlink()
