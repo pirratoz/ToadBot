@@ -154,6 +154,7 @@ class AuthInfo:
         }
         any_command = any_command_handler
         while True:
+            await asyncio_sleep(30)
             print("[task]: GET")
             try:
                 user_ids: list[int] = [
@@ -161,14 +162,12 @@ class AuthInfo:
                     if client.is_connected
                 ]
                 if not user_ids:
-                    return
+                    continue
                 tasks = await WEB_API.get_ready_tasks(user_ids)
                 for task in tasks:
                     coro = commands.get(task.task_type, any_command)
                     asyncio_create_task(coro, self.clients.get(task.user_id))
             except Exception as e:
                 ...
-            
-            await asyncio_sleep(30)
 
 AuthInfoClass = AuthInfo()
