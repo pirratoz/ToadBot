@@ -66,6 +66,11 @@ class AuthInfo:
         self.client_running[user_id] = False
         return client
     
+    def remove_files(self, user_id: int) -> None:
+        path_sessions = Path(getenv("PATH_TG_BOT_SESSIONS"))
+        path_user = path_sessions / f"{user_id}"
+        path_user.rmdir()
+
     def get_client(self, user_id: int) -> Client | None:
         return self.clients.get(user_id, None)
     
