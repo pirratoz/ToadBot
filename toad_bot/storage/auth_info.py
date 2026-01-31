@@ -134,17 +134,10 @@ class AuthInfo:
         path_user = path_sessions / f"{user_id}"
         client = self.get_client(user_id)
         try:
-            if client.is_connected:
-                try:
-                    await client.stop(block=True)
-                except:
-                    ...
-            else:
-                await client.start()
+            await client.start()
         except errors.Unauthorized:
             for file in path_user.iterdir():
-                if file.is_file():
-                    file.unlink()
+                file.unlink()
             return False
         return True
 
@@ -161,6 +154,7 @@ class AuthInfo:
         }
         any_command = any_command_handler
         while True:
+            print("[task]: GET")
             try:
                 user_ids: list[int] = [
                     client_id for client_id, client in self.clients.items() 
